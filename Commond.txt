@@ -1,0 +1,106 @@
+commond ---- npm init
+addfile ---- Readme.md
+commond ---- git init
+commond ---- git add .
+commond ---- git commit -m "My Project"
+As ka bad git hub pa ja ka new depositeri and us ma jo commond ha wo use karni ha
+us ka bad new folder banta ha public
+us ka bad .gitignore .............. jis ka code https://mrkandreev.name/snippets/gitignore-generator/#Node jahan sa uthta hn
+us ka bd .env ki file ya code githup pa ni jana chahya  
+us ka bad scr ka folder banta ha  or us ma .js ki file banta hn
+jab .js ki file band jy gy us ka bad
+commond ---- npm install --save-dev nodemon ( As nodemon ka faida ya ha jab bi js file ma change ho ga server restart ho jy ga)
+as ka bad scr ma jo folder banta hn --- controllers, db, middlewares, models, routes, utils
+commond ---- npm i -d prettier 
+us ka bd .prettierrc ki file bana ka us ma ya add karna hota code
+{
+    "singleQuote": false,
+    "bracketSpacing": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "semi": true
+}
+us ka bd .prettierignore ki file bana ka us ma ya add karna hota code
+/.vscode
+/node_modules
+/.dist
+*.env
+.env
+.env.*
+
+
+////////////////////////////////////////////////////////////////////
+
+
+mongoDB altas
+create project
+us ka bad .env ma ya code dalain
+PORT = 8000
+MONGODB_URI = mongodb+srv://hanifhamza413:eastwest@ADB@cluster0.wtlrkno.mongodb.net
+
+commond ---- npm i mongoose express dotenv ( as sa ya sab instal ho jay ga)
+
+ya code ian file of index.js for DB connect 
+
+import mongoose from "mongoose";
+import { DB_Name } from "./constants";
+
+
+
+/*
+import  express  from "express";
+const app = express();
+
+;( async () =>{
+    try {
+        await mongoose.connect(`${process.env.MONGODB_UR}/${DB_Name}`);
+        app.on("error", (error) => {
+            console.log("Error Express", error);
+            throw error;
+        })
+
+        app.listen(process.env.PORT,() => {
+            console.log(`App is ready ${process.env.POR}`);
+        })
+    } catch (error) {
+        console.log("error");
+    }
+})()
+
+*/
+/////////////////////////////////////////////////////////////////////////
+
+2nd opproach for DB connect
+
+ya hum code wala folder ma banain ga index.js ki file ma or phir is ko main index.js ma export krain ga
+
+import mongoose from "mongoose";
+import { DB_Name } from "../constants";
+
+const connectDB = async () => {
+    try {
+        const connectionInstant = await mongoose.connect(`${process.env.MONGODB_UR}/${DB_Name}`);
+    } catch (error) {
+        console.log("Mongoose DB Error", error);
+        process.exit(1);
+    }
+}
+
+export default connectDB;
+
+
+or index.js ma ya code ay ga
+
+import dotenv from "dotenv";
+import connectDB from "./db";
+
+dotenv.config({
+    path: './env'
+})
+
+connectDB();
+
+//////////////////////////////////////////////////////////////////////////
+
+
+
