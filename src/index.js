@@ -6,6 +6,13 @@ dotenv.config({
 })
 
 connectDB()
+.then( () =>{
+    app.listen(process.env.PORT || 8000, () => {
+        console.log(`App is ready: ${process.env.PORT}`);
+    })
+}).catch((error) => {
+    console.log("DB Disconnect", error);
+})
 
 
 /*
@@ -21,7 +28,7 @@ const app = express();
         })
 
         app.listen(process.env.PORT,() => {
-            console.log(`App is ready ${process.env.POR}`);
+            console.log(`App is ready ${process.env.PORT}`);
         })
     } catch (error) {
         console.log("error");
