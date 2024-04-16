@@ -128,6 +128,10 @@ commond npm i cookie-parser cors
 
 is ka bd pora set ban hua ha backend folder ma
 npm install mongoose-aggregate-paginate-v2
+npm i bcrypt  (use for password)
+npm i jsonwebtoken (encode and decode the date)
+npm install cloudinary
+npm install multer
 
 
 
