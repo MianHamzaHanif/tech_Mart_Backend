@@ -6,7 +6,8 @@ import mongoose from 'mongoose';
 import { User } from './models/user.model.js'; // Adjust the path to your model
 
 async function dropWalletAddressIndex() {
-    await mongoose.connect('mongodb+srv://hanif123:Hamza123@cluster0.ezmrlx5.mongodb.net/'); // Replace with your MongoDB URI
+    // await mongoose.connect('mongodb+srv://hanif123:Hamza123@cluster0.ezmrlx5.mongodb.net/'); // Replace with your MongoDB URI
+    await mongoose.connect(`${process.env.MONGODB_URI}`)
 
     // Drop the walletAddress index if it exists
     await User.collection.dropIndex('email_1');
@@ -20,7 +21,7 @@ dotenv.config({
 })
 connectDB()
     .then(() => {
-        app.listen(process.env.PORT || 8000, () => {
+        app.listen(process.env.PORT, () => {
             console.log(`Server is running at port: ${process.env.PORT}`);
             // dropWalletAddressIndex()
         })
