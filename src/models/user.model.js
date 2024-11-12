@@ -4,13 +4,17 @@ import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
     {
-        username: {
+        userName: {
             type: String,
             required: true,
             unique: true,
             lowercase: true,
             trim: true,
             index: true
+        },
+        role: {
+            type: String,
+            required: true,
         },
         email: {
             type: String,
@@ -19,28 +23,15 @@ const userSchema = new Schema(
             lowercase: true,
             trim: true
         },
-        fullName: {
-            type: String,
-            required: true,
-            trim: true,
-            index: true
-        },
-        avatar: {
-            type: String,
-            required: true
-        },
-        coverImage: {
-            type: String
-        },
-        watchHistory: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "video"
-            }
-        ],
         password: {
             type: String,
             required: [true, 'Password is required']
+        },
+        OTPCode:{
+            type: String
+        },
+        otpExpiry:{
+            type: String
         },
         refreshToken: {
             type: String
@@ -57,12 +48,8 @@ userSchema.pre("save", async function (next) {
     next();
 })
 
-// userSchema.methods.isPasswordCorrect = async function (password) {
-//     return await bcrypt.compare(password, this.password);
-// }
-
 userSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password, this.password)
+    return await bcrypt.compare(password, this.password);
 }
 
 userSchema.methods.generateAccessToken = function () {

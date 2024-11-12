@@ -1,27 +1,32 @@
 import { Router } from "express";
-import { registerUser, loginUser, logoutUser, refreshAccessToken, getDetailofUser, getAllUser } from "../controllers/user.controller.js";
-import { upload } from "../middlewares/multer.middlewares.js";
+import {
+    registerUser, loginUser, logoutUser, changePasswordAfterLogin, changeUserPassword, resetUserPassword,
+    getAllUser, editUserName, userDelete, getUserCount, searchUser
+} from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route('/register').post(
-    upload.fields([
-        { name: 'avatar', maxCount: 1 },
-        { name: 'coverImage', maxCount: 2 }
-    ]),
-    registerUser
-)
+router.route('/register').post(registerUser);
 
-router.route("/login").post(loginUser)
+router.route("/login").post(loginUser);
 
-router.route("/logout").post(verifyJWT, logoutUser)
+router.route("/logout").post(verifyJWT, logoutUser);
 
-router.route('/refresh-token').post(refreshAccessToken);
+router.route('/changePasswordAfterUserLogin').put(verifyJWT, changePasswordAfterLogin);
 
-router.route('/userInfo').get(getDetailofUser);
+router.route('/changePassword').post(changeUserPassword);
 
-router.route('/allUser').get(getAllUser);
+router.route('/resetPassword').post(resetUserPassword);
 
+router.route('/allUser').get(verifyJWT, getAllUser);
+
+router.route('/editUserName').put(verifyJWT, editUserName);
+
+router.route('/userDelete').delete(verifyJWT, userDelete);
+
+router.route('/getUserLength').get(verifyJWT, getUserCount);
+
+router.route('/searchUser').get(verifyJWT, searchUser);
 
 export default router;
