@@ -220,25 +220,25 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         )
 })
 
-// const getDetailofUser = asyncHandler(async (req, res) => {
+const getDetailofUserViaRefreshToken = asyncHandler(async (req, res) => {
 
-//     const decodeToken = jwt.verify(req.body.refreshToken, process.env.REFRESH_TOKEN_SECRET);
-//     const user = await User.findById(decodeToken?._id);
+    const decodeToken = jwt.verify(req.body.refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decodeToken?._id);
 
-//     return res
-//         .status(200)
-//         .json(
-//             new ApiResponse(
-//                 200,
-//                 {
-//                     user
-//                 },
-//                 "Get information Successfully"
-//             )
-//         )
-// })
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user
+                },
+                "Get information Successfully"
+            )
+        )
+})
 
-const getDetailofUser = asyncHandler(async (req, res) => {
+const getDetailofUserViaAccessToken = asyncHandler(async (req, res) => {
 
     const decodeToken = jwt.verify(req.body.accessToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decodeToken?._id);
@@ -270,11 +270,93 @@ const getAllUser = asyncHandler(async (req, res) => {
             )
         )
 })
+
+const changePasswordViaBody = asyncHandler(async (req, res) => {
+    const { email, oldPassword, newPassword } = req.body;
+
+    if ([email, oldPassword, newPassword].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const user = await User.findOne({email});
+
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+    if(!isPasswordCorrect){
+        throw new ApiError(400, "Invalid Password")
+    }
+
+    user.password = newPassword;
+
+    await user.save({ validateBeforeSave: false })
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                user
+            },
+            "Password change successfully"
+        )
+    )
+})
+
+const changePassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    if ([ oldPassword, newPassword].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const user = await User.findById(req.user?._id);
+
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+    if(!isPasswordCorrect){
+        throw new ApiError(400, "Invalid Password")
+    }
+
+    user.password = newPassword;
+
+    await user.save({ validateBeforeSave: false })
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                user
+            },
+            "Password change successfully"
+        )
+    )
+})
+
+const getCurrentUser = asyncHandler(async(req, res) => {
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            req.user,
+            "This is current user"
+        )
+
+    )
+})
+
 export {
     registerUser,
     loginUser,
     logoutUser,
     refreshAccessToken,
-    getDetailofUser,
-    getAllUser
+    getDetailofUserViaRefreshToken,
+    getDetailofUserViaAccessToken,
+    getAllUser,
+    changePasswordViaBody,
+    changePassword,
+    getCurrentUser
 }
