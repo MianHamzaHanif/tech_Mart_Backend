@@ -11,13 +11,13 @@ router.route('/register').post(registerUser);
 
 router.route("/login").post(loginUser);
 
-router.route("/logout").post(verifyJWT, logoutUser);
+router.route("/logout").get(verifyJWT, logoutUser);
 
 router.route('/changePasswordAfterUserLogin').put(verifyJWT, changePasswordAfterLogin);
 
 router.route('/changePassword').post(changeUserPassword);
 
-router.route('/resetPassword').post(resetUserPassword);
+router.route('/updatePassword').post(resetUserPassword);
 
 router.route('/allUser').get(verifyJWT, getAllUser);
 

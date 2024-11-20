@@ -9,14 +9,15 @@ const generateAccessAndRefereshTokens = async (userId) => {
     try {
         // Retrieve user by ID
         const user = await User.findById(userId);
+        
         if (!user) {
             throw new ApiError(404, "User not found");
         }
 
         // Generate access and refresh tokens
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
-
+        const accessToken = await user.generateAccessToken();
+        const refreshToken = await user.generateRefreshToken();
+        
         // Save the refresh token to the user document
         user.refreshToken = refreshToken;
         await user.save({ validateBeforeSave: false });
@@ -110,12 +111,13 @@ const loginUser = asyncHandler(async (req, res) => {
     // Retrieve user details excluding sensitive fields
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
+
     // Define secure cookie options
     const cookieOptions = {
-        httpOnly: true, // Prevent client-side JS access to cookies
-        secure: true,
-        sameSite: 'strict', // Restrict cross-site sending
-        maxAge: process.env.REFRESH_TOKEN_EXPIRY_MS // Set refresh token expiry (in milliseconds)
+        httpOnly: true,
+        secure: false,  // Change to `true` in production with HTTPS
+        sameSite: 'Strict',
+        maxAge: process.env.REFRESH_TOKEN_EXPIRY_MS,
     };
 
     // Set cookies and send response
